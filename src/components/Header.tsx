@@ -1,4 +1,4 @@
-import { Affix, Avatar, Dropdown, Image, MenuProps } from "antd";
+import { Avatar, Dropdown, MenuProps } from "antd";
 import NotificationsDropDown from "./NotificationsDropDown";
 import { useAppSelector } from "@lib/redux/store";
 import moment from "moment";

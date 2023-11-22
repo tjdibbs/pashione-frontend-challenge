@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from "@lib/redux/store";
 import { Mode } from "@lib/redux/context/sessionContext";
 import { nanoid } from "@reduxjs/toolkit";
 import { AnimatePresence, motion } from "framer-motion";
-import Cookies from "node_modules/@types/js-cookie";
 
 const Icons: { [x in App.ThemeMode]: string } = {
   default: "mdi:theme-light-dark",

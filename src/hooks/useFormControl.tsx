@@ -79,6 +79,7 @@ export default function useFormControl<T>(props: Props<T>) {
         />
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

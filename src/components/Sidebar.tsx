@@ -1,4 +1,3 @@
-import React from "react";
 import ThemeControl from "./ThemeControl";
 import PashioneLogo from "@assets/images/logo-white.png";
 import { Affix } from "antd";

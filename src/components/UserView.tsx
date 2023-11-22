@@ -6,9 +6,10 @@ import { useNavigate, useParams } from "react-router";
 import { Icon } from "@iconify/react";
 import stringToColor from "@lib/stringToColor";
 import { DescriptionsItemType } from "antd/es/descriptions";
-import { omit, pick } from "lodash";
+import { omit } from "lodash";
 import { CloseCircle } from "iconsax-react";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function getItems(
   details: Partial<
     App.User &
@@ -50,7 +51,7 @@ function UserView() {
   const [openDrawer, setOpenDrawer] = React.useState<boolean>(true);
   const [user, setUser] = React.useState<App.User>();
 
-  const { fetcher, fetching, setFetching } = useFetch(!user);
+  const { fetcher, fetching } = useFetch(!user);
   const navigate = useNavigate();
   const params = useParams<{ user_id: string }>();
 
@@ -72,7 +73,7 @@ function UserView() {
 
   React.useLayoutEffect(() => {
     getUser();
-  }, []);
+  }, [getUser]);
 
   console.log({ user });
 
