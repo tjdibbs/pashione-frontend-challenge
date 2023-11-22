@@ -64,7 +64,7 @@ function ThemeControl() {
   }, [mode]);
 
   return (
-    <div className="theme-controller absolute bottom-5 left-5">
+    <div className="theme-controller md:absolute md:bottom-5 left-5">
       <AnimatePresence mode="wait">
         <Dropdown
           // open={open}

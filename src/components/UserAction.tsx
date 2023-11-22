@@ -22,6 +22,7 @@ type UserActionPayload = {
   user?: App.User;
 };
 
+// This functions extract all subfields to object root level,
 const extractAllFields = (user: App.User) => ({
   ...omit(user, ["address", "company"]),
   ...omit(user.company, "name"),
@@ -42,11 +43,11 @@ const UserAction = React.forwardRef<
   const { fetcher, fetching } = useFetch();
 
   const submit = async (fields: FormDataType) => {
-    const user_id =
-      payload.action == "add" ? props.length + 1 : payload.user!.id!;
+    const user_id = payload.action == "add" ? undefined : payload.user!.id!;
 
+    // extract exact user object from formFields
+    // @ts-ignore
     const newUser: App.User = {
-      id: user_id,
       ...pick(fields, ["name", "phone", "email", "username", "website"]),
       address: {
         ...pick(fields, ["city", "street", "suite", "zipcode"]),
@@ -58,15 +59,19 @@ const UserAction = React.forwardRef<
       },
     };
 
-    const res = await fetcher({
-      url: config.urls.users + "/" + user_id,
-      method: payload.action == "add" ? "put" : "post",
+    const res = await fetcher<App.User>({
+      url: config.urls.users + "/" + (payload.action == "edit" ? user_id : ""),
+      method: payload.action == "add" ? "post" : "put",
       data: payload.action == "add" ? newUser : undefined,
     });
 
+    // if payload action is add
     if (payload.action == "add") {
-      props.setUsers((users) => [newUser, ...users]);
-    } else {
+      props.setUsers((users) => [res, ...users]);
+    }
+
+    // if payload action is edit
+    else {
       props.setUsers((users) => {
         const updatedUsers = users.map((user) => {
           if (user.id === payload.user?.id) {
@@ -80,19 +85,42 @@ const UserAction = React.forwardRef<
       });
     }
 
+    // alert success after action is complete
     Alert.success(
       `User ${payload.action == "add" ? "Added" : "Updated"} Successfully`,
       3
     );
     setOpen(false);
+    resetFields();
   };
 
+  const resetFields = () => {
+    reset({
+      name: "",
+      lat: "",
+      lng: "",
+      bs: "",
+      companyName: "",
+      phone: "",
+      email: "",
+      street: "",
+      city: "",
+      suite: "",
+      website: "",
+      zipcode: "",
+      username: "",
+      catchPhrase: "",
+    });
+  };
+
+  // Expose component function to parent elements
   React.useImperativeHandle(
     ref,
     () => ({
       open: (payload) => {
-        console.log({ payload });
+        // Check if payload has a user field when payload.action == "edit"
         if (payload.user) {
+          // user fields and subfields are extracted to plain object to fill it input box
           reset(extractAllFields(payload.user));
         }
         setPayload(payload);
@@ -113,7 +141,7 @@ const UserAction = React.forwardRef<
       maskClosable={false}
       closeIcon={<CloseCircle className="dark:text-white" />}
       onCancel={() => {
-        reset({});
+        resetFields();
         setOpen(false);
       }}
       classNames={{
@@ -165,6 +193,7 @@ const UserAction = React.forwardRef<
 
 const primaryDetails: (keyof App.User)[] = [
   "name",
+  "username",
   "email",
   "phone",
   "website",

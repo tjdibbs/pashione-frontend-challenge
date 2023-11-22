@@ -1,30 +1,24 @@
-# React + TypeScript + Vite
+# Pashione Frontend Test
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+### How to Setup
+- Install modules  ```npm i``` 
+- Run Dev Server ```npm run dev``` and open http://localhost:4000
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+ To Run the Cypress
+- Make sure Dev Server is running on port 4000, then run ```npm run cy:open``` to open cypress
+- Click on `end-2-end-test` and select you preferred browser `i.e chrome`
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Core Libraries
+- [Antd](https://ant.design) - For some ready made components
+- [Tailwind CSS](https://tailwindcss.com) - For Styling and Theme Control
+- [React Router](https://reactrouter.com) - For Routing
 
-- Configure the top-level `parserOptions` property like this:
+## Project Structure
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- There is only 1 route `/users/*`, any other routes is redirected to the only routes available to avoid error 404 not found
+---
+- When viewing a single user, a `Drawer` show up, after the it match the required route that will look like `http://localhost:4000/users/:user_id`
+---
+- I have a `User Action Component` that handles both `Adding User` and `Editing User` dynamically.

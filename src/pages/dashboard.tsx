@@ -8,10 +8,12 @@ import React from "react";
 import { Route, Routes } from "react-router";
 import User from "@comp/User";
 import { Refresh } from "iconsax-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 function Dashboard() {
   const userActionRef = React.useRef<UserActionRefObject>(null);
   const [users, setUsers] = React.useState<App.User[]>([]);
+  const [deleting, setDeleting] = React.useState<number>();
   const { fetcher, fetching } = useFetch(true);
 
   const getUsers = React.useCallback(async () => {
@@ -19,7 +21,7 @@ function Dashboard() {
       url: config.urls.users,
     });
 
-    console.log({ users });
+    // ensure response is an array and has some length
     if (users instanceof Array && users?.length) setUsers(users);
     else {
       Alert.error((users as { error: string }).error, 4);
@@ -30,12 +32,18 @@ function Dashboard() {
 
   const handleDelete = React.useCallback((user_id: number) => {
     return async () => {
-      const res = await fetcher({
+      setDeleting(user_id);
+      const res = await fetcher<any>({
         url: config.urls.users + "/" + user_id,
         method: "delete",
       });
 
-      console.log({ res });
+      // alert error if there is res.error
+      if (res.error) Alert.error(res.error);
+      // Only update users if there is no error
+      else setUsers((users) => users.filter((u) => u.id != user_id));
+
+      setDeleting(undefined);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -50,7 +58,7 @@ function Dashboard() {
         <div className="control flex items-center justify-between mb-4 px-4">
           <div className="title font-bold text-xl">
             Users{" "}
-            <Tag className="font-bold text-xl rounded-full text-white bg-primary">
+            <Tag className="users-count font-bold text-xl rounded-full text-white bg-primary">
               {users?.length || 0}
             </Tag>
           </div>
@@ -59,9 +67,9 @@ function Dashboard() {
               shape="circle"
               size="large"
               type="text"
-              className={fetching ? "animate-spin" : ""}
+              className={"refresh-btn " + (fetching ? "animate-spin" : "")}
               onClickCapture={getUsers}
-              icon={<Refresh />}
+              icon={<Refresh className="dark:text-gray-300" />}
             />
             <Button
               onClick={() => userActionRef.current?.open({ action: "add" })}
@@ -76,17 +84,26 @@ function Dashboard() {
       </div>
 
       <div className="users-list flex flex-col gap-4 px-6 pb-20">
-        {users.map((user) => {
-          return (
-            <User
-              user={user}
-              userActionRef={userActionRef}
-              handleDelete={handleDelete}
-            />
-          );
-        })}
+        <AnimatePresence mode="sync">
+          {(!fetching || typeof deleting != "undefined") &&
+            users.map((user) => {
+              return (
+                // this motion.div adds exit animation to user, when it is deleted
+                <motion.div key={user.id} exit={{ opacity: 0 }}>
+                  <User
+                    user={user}
+                    key={user.id}
+                    userActionRef={userActionRef}
+                    handleDelete={handleDelete}
+                    deleting={deleting == user.id}
+                  />
+                </motion.div>
+              );
+            })}
+        </AnimatePresence>
 
         {fetching &&
+          deleting === undefined &&
           Array.from(new Array(5)).map((_, i) => {
             return <LoadingUser key={i} />;
           })}

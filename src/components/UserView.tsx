@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import stringToColor from "@lib/stringToColor";
 import { DescriptionsItemType } from "antd/es/descriptions";
 import { omit, pick } from "lodash";
+import { CloseCircle } from "iconsax-react";
 
 export function getItems(
   details: Partial<
@@ -34,7 +35,12 @@ export function getItems(
         ),
         children: (
           // @ts-ignore
-          <Tag>{String(value == null ? "--:--:--" : value)}</Tag>
+          <Tag
+            className="max-w-[200px] overflow-hidden text-ellipsis"
+            rootClassName="dark:text-gray-300  dark:bg-gray-900"
+          >
+            {String(value == null ? "--:--:--" : value)}
+          </Tag>
         ),
       };
     });
@@ -73,9 +79,13 @@ function UserView() {
   return (
     <Drawer
       width={500}
-      title={<p className="font-bold">User Overview</p>}
+      closeIcon={<CloseCircle className="dark:text-white close-view" />}
+      title={<p className="font-bold dark:text-gray-300">User Overview</p>}
       open={openDrawer}
       onClose={closeDrawer}
+      classNames={{
+        content: "dark:bg-gray-800 dark:text-white",
+      }}
     >
       {fetching && <Skeleton />}
       {!fetching && user && (
@@ -96,16 +106,16 @@ function UserView() {
             </div>
           </div>
           <div className="flex items-center flex-wrap gap-2 mt-6">
-            <Tag rootClassName="email flex py-1 px-4 bg-primary/5 rounded-full text-sm items-center gap-2">
+            <Tag rootClassName="email dark:bg-gray-900 dark:text-gray-300 flex py-1 px-4 bg-primary/5 rounded-full text-sm items-center gap-2">
               <Icon icon={"line-md:email"} fontSize={24} />
               <span>{user.email}</span>
             </Tag>
-            <Tag rootClassName="email flex py-1 px-4 bg-primary/5 rounded-full text-sm items-center gap-2">
-              <Icon icon={"bi:phone"} fontSize={24} />
+            <Tag rootClassName="phone dark:bg-gray-900 dark:text-gray-300 flex py-1 px-4 bg-primary/5 rounded-full text-sm items-center gap-2">
+              <Icon icon={"fluent:call-32-filled"} fontSize={24} />
               <span>{user.phone}</span>
             </Tag>
             <a href={user.website} className="website">
-              <Tag rootClassName="email flex py-1 px-2 bg-primary/5 rounded-full text-sm items-center gap-2">
+              <Tag rootClassName="website dark:bg-gray-900 dark:text-gray-300 flex py-1 px-2 bg-primary/5 rounded-full text-sm items-center gap-2">
                 <Icon icon={"mdi:web"} fontSize={24} />
                 <span>{user.website}</span>
               </Tag>
@@ -116,7 +126,7 @@ function UserView() {
             <div className="section-title font-bold mb-3">Address</div>
             <div className="section-content">
               <Descriptions
-                column={2}
+                column={{ xs: 1, sm: 2 }}
                 items={getItems(omit(user.address, "geo"))}
               />
               <Descriptions

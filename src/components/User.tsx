@@ -10,13 +10,22 @@ type Props = {
   user: App.User;
   userActionRef: React.RefObject<UserActionRefObject>;
   handleDelete: (user_id: number) => () => void;
+  deleting: boolean;
 };
 
 const User = React.memo(function User(props: Props) {
   const { user, userActionRef, handleDelete } = props;
   return (
-    <motion.div className="user p-4 rounded-xl border border-solid border-primary/30 shadow-xl shadow-primary/10">
-      <div className="flex justify-between">
+    <motion.div
+      exit={{ opacity: 1 }}
+      initial={{ opacity: 0.4, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="user p-4 rounded-xl border border-solid border-primary/30 dark:border-gray-300/10 shadow-xl shadow-primary/10 dark:shadow-gray-200/5"
+    >
+      <div
+        id={user.name.replace(" ", "-")}
+        className="flex  flex-wrap  gap-6 justify-end sm:justify-between"
+      >
         <div className="wrap">
           <div className="flex flex-1 items-start gap-3">
             <Avatar
@@ -34,16 +43,16 @@ const User = React.memo(function User(props: Props) {
             </div>
           </div>
           <div className="flex items-center flex-wrap gap-2 mt-6">
-            <Tag rootClassName="email flex py-1 px-4 bg-primary/5 rounded-full text-sm items-center gap-2">
+            <Tag rootClassName="email dark:bg-gray-900 dark:text-gray-300 flex py-1 px-4 bg-primary/5 rounded-full text-sm items-center gap-2">
               <Icon icon={"line-md:email"} fontSize={24} />
               <span>{user.email}</span>
             </Tag>
-            <Tag rootClassName="email flex py-1 px-2 bg-primary/5 rounded-full text-sm items-center gap-2">
+            <Tag rootClassName="phone dark:bg-gray-900 dark:text-gray-300 flex py-1 px-4 bg-primary/5 rounded-full text-sm items-center gap-2">
               <Icon icon={"fluent:call-32-filled"} fontSize={24} />
               <span>{user.phone}</span>
             </Tag>
             <a href={user.website} className="website">
-              <Tag rootClassName="email flex py-1 px-2 bg-primary/5 rounded-full text-sm items-center gap-2">
+              <Tag rootClassName="website dark:bg-gray-900 dark:text-gray-300 flex py-1 px-2 bg-primary/5 rounded-full text-sm items-center gap-2">
                 <Icon icon={"mdi:web"} fontSize={24} />
                 <span>{user.website}</span>
               </Tag>
@@ -52,7 +61,10 @@ const User = React.memo(function User(props: Props) {
         </div>
         <div className="actions flex items-center gap-3">
           <NavLink to={String(user.id)}>
-            <Button type="primary" className="rounded-full font-semibold">
+            <Button
+              type="primary"
+              className="view-user rounded-full font-semibold"
+            >
               View User
             </Button>
           </NavLink>
@@ -79,7 +91,13 @@ const User = React.memo(function User(props: Props) {
               shape="circle"
               type="text"
               size="large"
-              icon={<Icon icon={"fluent:delete-32-regular"} fontSize={24} />}
+              className="dark:text-gray-300"
+              loading={props.deleting}
+              icon={
+                !props.deleting ? (
+                  <Icon icon={"fluent:delete-32-regular"} fontSize={24} />
+                ) : undefined
+              }
             />
           </Popconfirm>
         </div>
