@@ -4,10 +4,7 @@ import { config as appConfig, appealingMessage } from "@lib/constants";
 import { useAppSelector } from "@lib/redux/store";
 import { useNavigate } from "react-router";
 
-export type responseType<T> = {
-  message: string;
-  status: boolean;
-} & T;
+export type responseType<T> = T;
 
 export default function useFetch(fetchOnMount = false) {
   const [fetching, setFetching] = React.useState<boolean>(fetchOnMount);
