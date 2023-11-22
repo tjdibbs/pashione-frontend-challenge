@@ -11,9 +11,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#2752e7",
+          colorPrimary: "#991d03",
           colorBgContainer: "#fff",
-          fontFamily: "Inter",
+          fontFamily: "Poppins, Inter, 'Noto Sans'",
         },
       }}
     >
